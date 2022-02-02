@@ -47,8 +47,24 @@ namespace RatKing.SSM {
 			return true;
 		}
 
+		public bool SetState(TState name, out StateFunctions<TState> nextState) {
+			if (Equals(name, CurState.name)) { nextState = null; return false; }
+			if (Equals(name, default(TState))) { nextState = stateNone; }
+			else if (!states.TryGetValue(name, out nextState)) { LogError("State " + name + " is not defined!"); return false; }
+			CurState.onStop?.Invoke(name);
+			var prevStateName = CurState.name;
+			CurState = nextState;
+			OnStateChange?.Invoke(prevStateName, name);
+			nextState.onStart?.Invoke(prevStateName);
+			return true;
+		}
+
 		public bool TryGetState(TState name, out StateFunctions<TState> state) {
 			return states.TryGetValue(name, out state);
+		}
+
+		public StateFunctions<TState> GetState(TState name) {
+			return states[name];
 		}
 	}
 
@@ -99,8 +115,24 @@ namespace RatKing.SSM {
 			return true;
 		}
 
+		public bool SetState(TState name, out StateFunctions<TTarget, TState> nextState) {
+			if (Equals(name, CurState.name)) { nextState = null; return false; }
+			if (Equals(name, default(TState))) { nextState = stateNone; }
+			else if (!states.TryGetValue(name, out nextState)) { LogError("State " + name + " is not defined!"); return false; }
+			CurState.onStop?.Invoke(target, name);
+			var prevStateName = CurState.name;
+			CurState = nextState;
+			OnStateChange?.Invoke(target, prevStateName, name);
+			nextState.onStart?.Invoke(target, prevStateName);
+			return true;
+		}
+
 		public bool TryGetState(TState name, out StateFunctions<TTarget, TState> state) {
 			return states.TryGetValue(name, out state);
+		}
+
+		public StateFunctions<TTarget, TState> GetState(TState name) {
+			return states[name];
 		}
 	}
 }
