@@ -5,7 +5,7 @@ namespace RatKing.SSM {
 		public System.Action<TState> onStart; // parameter is the previous state (prevState)
 		public System.Action<float> onUpdate; // parameter is delta time
 		public System.Action<TState> onStop; // parameter is the next state (nextState)
-		public object tempData;
+		public object userData;
 	}
 
 	// with target
