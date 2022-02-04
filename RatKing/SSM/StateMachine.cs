@@ -4,7 +4,7 @@ namespace RatKing.SSM {
 
 	public class StateMachine<TState> {
 		protected Dictionary<TState, StateFunctions<TState>> states = new Dictionary<TState, StateFunctions<TState>>();
-		static StateFunctions<TState> stateNone = new StateFunctions<TState>() { name = default };
+		static readonly StateFunctions<TState> stateNone = new StateFunctions<TState>() { name = default };
 		public StateFunctions<TState> CurState { get; private set; } = stateNone;
 		public event System.Action<TState, TState> OnStateChange = null; // prevState, nextState
 		event System.Action<string> LogError;
@@ -69,9 +69,9 @@ namespace RatKing.SSM {
 	}
 
 	public class StateMachine<TTarget, TState> {
-		TTarget target;
-		protected Dictionary<TState, StateFunctions<TTarget, TState>> states = new Dictionary<TState, StateFunctions<TTarget, TState>>();
-		static StateFunctions<TTarget, TState> stateNone = new StateFunctions<TTarget, TState>() { name = default };
+		readonly TTarget target;
+		protected readonly Dictionary<TState, StateFunctions<TTarget, TState>> states = new Dictionary<TState, StateFunctions<TTarget, TState>>();
+		static readonly StateFunctions<TTarget, TState> stateNone = new StateFunctions<TTarget, TState>() { name = default };
 		public StateFunctions<TTarget, TState> CurState { get; private set; } = stateNone;
 		public event System.Action<TTarget, TState, TState> OnStateChange = null; // prevState, nextState
 		event System.Action<string> LogError;
