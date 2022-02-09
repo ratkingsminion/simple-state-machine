@@ -11,6 +11,12 @@ namespace RatKing.SSM {
 
 		//
 
+#if UNITY_5_3_OR_NEWER
+		public StateMachine() {
+			LogError = UnityEngine.Debug.LogError;
+		}
+#endif
+
 		public StateMachine(System.Action<string> logError) {
 			LogError = logError;
 		}
@@ -77,6 +83,13 @@ namespace RatKing.SSM {
 		event System.Action<string> LogError;
 
 		//
+
+#if UNITY_5_3_OR_NEWER
+		public StateMachine(TTarget target) {
+			this.target = target;
+			LogError = UnityEngine.Debug.LogError;
+		}
+#endif
 
 		public StateMachine(TTarget target, System.Action<string> logError) {
 			this.target = target;
