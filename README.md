@@ -8,30 +8,31 @@ Usage (Unity):
   RatKing.SSM.StateMachine<string> ssmTest;
 
   void Start() {
-    ssmTest = new RatKing.SSM.StateMachine<string>(Debug.LogError);
+    ssmTest = new RatKing.SSM.StateMachine<string>(); // sets error logging to Debug.LogError
 
     var timer = 0f;
     
-    ssmTest.AddState("A", new RatKing.SSM.StateFunctions<string>() {
-      onStart = prevState => {
+    // state initialisation variant A - add callbacks as parameters
+    ssmTest.AddState("A",
+      prevState => { // onStart
         if (prevState == default) { Debug.Log("begin"); }
         else { Debug.Log("switched state to A"); }
       },
-      onUpdate = dt => {
+      dt => { // onUpdate
         timer -= dt * 2f;
         someObject.position = new Vector3(0f, Mathf.Sin(timer), 0f);
       }
     });
     
-    ssmTest.AddState("B", 
-      oldState => { // onStart
+    // state initialisation variant B - add callbacks via currying
+    ssmTest.AddState("B")
+      .OnStart(oldState => {
         Debug.Log("switched state to B");
-      },
-      dt => { // onUpdate
+      })
+      .OnUpdate(dt => {
         timer += dt * 2f;
         someObject.position = new Vector3(0f, 2f * Mathf.Sin(timer), 0f);
-      }
-    );
+      });
     
     ssmTest.SetState("A");
   }

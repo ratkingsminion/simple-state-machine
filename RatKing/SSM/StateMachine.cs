@@ -12,6 +12,7 @@ namespace RatKing.SSM {
 		//
 
 #if UNITY_5_3_OR_NEWER
+		// this works with older Unity versions too, but afaik they don't have such definitions
 		public StateMachine() {
 			LogError = UnityEngine.Debug.LogError;
 		}
@@ -19,6 +20,10 @@ namespace RatKing.SSM {
 
 		public StateMachine(System.Action<string> logError) {
 			LogError = logError;
+		}
+
+		public StateFunctions<TState> AddState(TState name) {
+			return AddState(name, new StateFunctions<TState>());
 		}
 
 		public StateFunctions<TState> AddState(TState name, System.Action<TState> onStart = null, System.Action<float> onUpdate = null, System.Action<TState> onStop = null) {
@@ -94,6 +99,10 @@ namespace RatKing.SSM {
 		public StateMachine(TTarget target, System.Action<string> logError) {
 			this.target = target;
 			LogError = logError;
+		}
+
+		public StateFunctions<TTarget, TState> AddState(TState name) {
+			return AddState(name, new StateFunctions<TTarget, TState>());
 		}
 
 		public StateFunctions<TTarget, TState> AddState(TState name, System.Action<TTarget, TState> onStart = null, System.Action<TTarget, float> onUpdate = null, System.Action<TTarget, TState> onStop = null) {
