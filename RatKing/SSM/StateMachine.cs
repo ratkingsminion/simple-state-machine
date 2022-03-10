@@ -26,8 +26,8 @@ namespace RatKing.SSM {
 			return AddState(name, new StateFunctions<TState>());
 		}
 
-		public StateFunctions<TState> AddState(TState name, System.Action<TState> onStart = null, System.Action<float> onUpdate = null, System.Action<TState> onStop = null) {
-			return AddState(name, new StateFunctions<TState>() { onStart = onStart, onUpdate = onUpdate, onStop = onStop });
+		public StateFunctions<TState> AddState(TState name, System.Action<TState> start = null, System.Action<float> update = null, System.Action<TState> stop = null) {
+			return AddState(name, new StateFunctions<TState>() { start = start, update = update, stop = stop });
 		}
 
 		public StateFunctions<TState> AddState(TState name, StateFunctions<TState> stateFunctions) {
@@ -38,7 +38,7 @@ namespace RatKing.SSM {
 		}
 
 		public void Update(float dt) {
-			CurState.onUpdate?.Invoke(dt);
+			CurState.update?.Invoke(dt);
 		}
 
 		public bool ClearState() {
@@ -50,11 +50,11 @@ namespace RatKing.SSM {
 			StateFunctions<TState> nextState;
 			if (Equals(name, default(TState))) { nextState = stateNone; }
 			else if (!states.TryGetValue(name, out nextState)) { LogError("State " + name + " is not defined!"); return false; }
-			CurState.onStop?.Invoke(name);
+			CurState.stop?.Invoke(name);
 			var prevStateName = CurState.name;
 			CurState = nextState;
 			OnStateChange?.Invoke(prevStateName, name);
-			nextState.onStart?.Invoke(prevStateName);
+			nextState.start?.Invoke(prevStateName);
 			return true;
 		}
 
@@ -62,11 +62,11 @@ namespace RatKing.SSM {
 			if (Equals(name, CurState.name)) { nextState = null; return false; }
 			if (Equals(name, default(TState))) { nextState = stateNone; }
 			else if (!states.TryGetValue(name, out nextState)) { LogError("State " + name + " is not defined!"); return false; }
-			CurState.onStop?.Invoke(name);
+			CurState.stop?.Invoke(name);
 			var prevStateName = CurState.name;
 			CurState = nextState;
 			OnStateChange?.Invoke(prevStateName, name);
-			nextState.onStart?.Invoke(prevStateName);
+			nextState.start?.Invoke(prevStateName);
 			return true;
 		}
 
@@ -105,8 +105,8 @@ namespace RatKing.SSM {
 			return AddState(name, new StateFunctions<TTarget, TState>());
 		}
 
-		public StateFunctions<TTarget, TState> AddState(TState name, System.Action<TTarget, TState> onStart = null, System.Action<TTarget, float> onUpdate = null, System.Action<TTarget, TState> onStop = null) {
-			return AddState(name, new StateFunctions<TTarget, TState>() { onStart = onStart, onUpdate = onUpdate, onStop = onStop });
+		public StateFunctions<TTarget, TState> AddState(TState name, System.Action<TTarget, TState> start = null, System.Action<TTarget, float> update = null, System.Action<TTarget, TState> stop = null) {
+			return AddState(name, new StateFunctions<TTarget, TState>() { start = start, update = update, stop = stop });
 		}
 
 		public StateFunctions<TTarget, TState> AddState(TState name, StateFunctions<TTarget, TState> stateFunctions) {
@@ -117,7 +117,7 @@ namespace RatKing.SSM {
 		}
 
 		public void Update(float dt) {
-			CurState.onUpdate?.Invoke(target, dt);
+			CurState.update?.Invoke(target, dt);
 		}
 
 		public bool ClearState() {
@@ -129,11 +129,11 @@ namespace RatKing.SSM {
 			StateFunctions<TTarget, TState> nextState;
 			if (Equals(name, default(TState))) { nextState = stateNone; }
 			else if (!states.TryGetValue(name, out nextState)) { LogError("State " + name + " is not defined!"); return false; }
-			CurState.onStop?.Invoke(target, name);
+			CurState.stop?.Invoke(target, name);
 			var prevStateName = CurState.name;
 			CurState = nextState;
 			OnStateChange?.Invoke(target, prevStateName, name);
-			nextState.onStart?.Invoke(target, prevStateName);
+			nextState.start?.Invoke(target, prevStateName);
 			return true;
 		}
 
@@ -141,11 +141,11 @@ namespace RatKing.SSM {
 			if (Equals(name, CurState.name)) { nextState = null; return false; }
 			if (Equals(name, default(TState))) { nextState = stateNone; }
 			else if (!states.TryGetValue(name, out nextState)) { LogError("State " + name + " is not defined!"); return false; }
-			CurState.onStop?.Invoke(target, name);
+			CurState.stop?.Invoke(target, name);
 			var prevStateName = CurState.name;
 			CurState = nextState;
 			OnStateChange?.Invoke(target, prevStateName, name);
-			nextState.onStart?.Invoke(target, prevStateName);
+			nextState.start?.Invoke(target, prevStateName);
 			return true;
 		}
 
