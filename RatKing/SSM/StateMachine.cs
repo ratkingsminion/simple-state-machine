@@ -58,6 +58,17 @@ namespace RatKing.SSM {
 			return true;
 		}
 
+		public bool SetState(StateFunctions<TState> nextState) {
+			if (nextState == null) { nextState = stateNone; }
+			if (nextState == CurState) { return false; }
+			CurState.stop?.Invoke(nextState.name);
+			var prevStateName = CurState.name;
+			CurState = nextState;
+			OnStateChange?.Invoke(prevStateName, nextState.name);
+			nextState.start?.Invoke(prevStateName);
+			return true;
+		}
+
 		public bool SetState(TState name, out StateFunctions<TState> nextState) {
 			if (Equals(name, CurState.name)) { nextState = null; return false; }
 			if (Equals(name, default(TState))) { nextState = stateNone; }
@@ -133,6 +144,17 @@ namespace RatKing.SSM {
 			var prevStateName = CurState.name;
 			CurState = nextState;
 			OnStateChange?.Invoke(target, prevStateName, name);
+			nextState.start?.Invoke(target, prevStateName);
+			return true;
+		}
+
+		public bool SetState(StateFunctions<TTarget, TState> nextState) {
+			if (nextState == null) { nextState = stateNone; }
+			if (nextState == CurState) { return false; }
+			CurState.stop?.Invoke(target, nextState.name);
+			var prevStateName = CurState.name;
+			CurState = nextState;
+			OnStateChange?.Invoke(target, prevStateName, nextState.name);
 			nextState.start?.Invoke(target, prevStateName);
 			return true;
 		}
